@@ -11,32 +11,63 @@ typedef struct {
     int quantidade_disponivel;
     char status[20];
 } Equipamento;
-
 char status_possiveis[3][19] = {"Disponivel","Emprestado","Manutencao"};
-
+//funÃ§Ãµes
+void listarEquipamentos(Equipamento*,int*); 
+void emprestarEquipamento(Equipamento*,int n); 
+void devolverEquipamento(Equipamento*,int n); 
+void salvarDados(Equipamento *equipamentos,int, const char*);
+void carregarDados(Equipamento *equipamentos,int*, const char*);
 void menu();
+
+
+int main() {
+    Equipamento equipamentos[MAX_EQUIP];
+    int n = 0;
+    int opcao;
+
+    carregarDados(equipamentos, &n, "equipamentos.txt");
+
+    do {
+        menu();
+        scanf("%d", &opcao);
+        switch(opcao) {
+            case 1: cadastrarEquipamento(equipamentos, &n); break;
+            case 2: listarEquipamentos(equipamentos, n); break;
+            case 3: emprestarEquipamento(equipamentos, n); break;
+            case 4: devolverEquipamento(equipamentos, n); break;
+            case 5: salvarDados(equipamentos, n, "equipamentos.txt"); break;
+            case 0: printf("Saindo...\n"); break;
+            default: printf("Opcao invalida.\n");
+        }
+    } while(opcao != 0);
+
+    return 0;
+}
+
+
 void cadastrarEquipamento(Equipamento *equipamentos, int *n){
     int p;
+	int id=0;
 	do {
 		printf("Digite o nome do equipamento para cadastro: ");
 			scanf("%s", equipamentos[*n].nome);
-		printf("Digite o ID do equipamento: ");
-			scanf("%d", &equipamentos[*n].id);
+			equipamentos[id].id;
 		printf("Digite a quantidade desse equipamento: ");
 		    scanf("%d", &equipamentos[*n].quantidade_max);
 		    equipamentos[*n].quantidade_disponivel=equipamentos[*n].quantidade_max;
 		int b;	
-		printf("\nDigite o estado do equipamento(0=Disponivel,1=Emprestado,2=Manutenção): ");
+		printf("\nDigite o estado do equipamento(0=Disponivel,1=Emprestado,2=Manutenï¿½ï¿½o): ");
 			scanf("%d", &b);
 			strcpy(equipamentos[*n].status, status_possiveis[b]);
 		*n += 1;
 		printf("voce quer cadastrar mais um equipamento? (1 = sim, 0 = nao): ");
-		scanf("%d", &p);	
+		scanf("%d", &p);
+		id++;	
 		} while(p);
 	}
 
-
-void listarEquipamentos(Equipamento *equipamentos, int n){
+void listarEquipamentos(Equipamento *equipamentos, int *n){
 	int a;
 	printf("NOME |ID |QTD_MAX |QTD_DISP | STATUS\n");
 	for(a=0; a<n;a++) {
@@ -68,33 +99,6 @@ void emprestarEquipamento(Equipamento *equipamentos, int n){
 	} while (id!=-1);
 		
 }
-void devolverEquipamento(Equipamento *equipamentos, int n){}
-void salvarDados(Equipamento *equipamentos, int n, const char *nome_arquivo){}
-void carregarDados(Equipamento *equipamentos, int *n, const char *nome_arquivo){}
-
-int main() {
-    Equipamento equipamentos[MAX_EQUIP];
-    int n = 0;
-    int opcao;
-
-    carregarDados(equipamentos, &n, "equipamentos.txt");
-
-    do {
-        menu();
-        scanf("%d", &opcao);
-        switch(opcao) {
-            case 1: cadastrarEquipamento(equipamentos, &n); break;
-            case 2: listarEquipamentos(equipamentos, n); break;
-            case 3: emprestarEquipamento(equipamentos, n); break;
-            case 4: devolverEquipamento(equipamentos, n); break;
-            case 5: salvarDados(equipamentos, n, "equipamentos.txt"); break;
-            case 0: printf("Saindo...\n"); break;
-            default: printf("Opção inválida.\n");
-        }
-    } while(opcao != 0);
-
-    return 0;
-}
 
 void menu() {
     printf("\n===== MENU =====\n");
@@ -104,6 +108,6 @@ void menu() {
     printf("4. Devolver Equipamento\n");
     printf("5. Salvar Dados\n");
     printf("0. Sair\n");
-    printf("Escolha uma opção: ");
+    printf("Escolha uma opcao: ");
 }
 
