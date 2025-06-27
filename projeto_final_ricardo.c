@@ -11,22 +11,29 @@ typedef struct {
     int quantidade_disponivel;
     char status[20];
 } Equipamento;
+
 char status_possiveis[3][19] = {"Disponivel","Emprestado","Manutencao"};
+int id=0;
+
 //funções
-void listarEquipamentos(Equipamento*,int*); 
+void cadastrarEquipamento(Equipamento*, int*);
+void listarEquipamentos(Equipamento*,int); 
 void emprestarEquipamento(Equipamento*,int n); 
 void devolverEquipamento(Equipamento*,int n); 
-void salvarDados(Equipamento *equipamentos,int, const char*);
-void carregarDados(Equipamento *equipamentos,int*, const char*);
+void salvarDados(Equipamento*,int,const char*);
+void carregarDados(Equipamento*,int*,const char*);
+
 void menu();
 
 
 int main() {
     Equipamento equipamentos[MAX_EQUIP];
     int n = 0;
+	id = n;
     int opcao;
 
-    carregarDados(equipamentos, &n, "equipamentos.txt");
+    carregarDados(equipamentos,&n,"equipamentos.txt");
+	printf("%d",n);
 
     do {
         menu();
@@ -46,58 +53,68 @@ int main() {
 }
 
 
+
 void cadastrarEquipamento(Equipamento *equipamentos, int *n){
     int p;
-	int id=0;
+	
 	do {
-		printf("Digite o nome do equipamento para cadastro: ");
+		puts("Digite o nome do equipamento para cadastro: ");
 			scanf("%s", equipamentos[*n].nome);
-			equipamentos[id].id;
-		printf("Digite a quantidade desse equipamento: ");
+		puts("Digite a quantidade desse equipamento: ");
 		    scanf("%d", &equipamentos[*n].quantidade_max);
 		    equipamentos[*n].quantidade_disponivel=equipamentos[*n].quantidade_max;
 		int b;	
-		printf("\nDigite o estado do equipamento(0=Disponivel,1=Emprestado,2=Manuten��o): ");
+		puts("\nDigite o estado do equipamento(0=Disponivel,1=Emprestado,2=Manuten��o): ");
 			scanf("%d", &b);
 			strcpy(equipamentos[*n].status, status_possiveis[b]);
 		*n += 1;
-		printf("voce quer cadastrar mais um equipamento? (1 = sim, 0 = nao): ");
+		puts("voce quer cadastrar mais um equipamento? (1 = sim, 0 = nao): ");
 		scanf("%d", &p);
-		id++;	
+		id++;
+		equipamentos[id].id = id;
 		} while(p);
 	}
 
-void listarEquipamentos(Equipamento *equipamentos, int *n){
+void listarEquipamentos(Equipamento *equipamentos, int n){
 	int a;
-	printf("NOME |ID |QTD_MAX |QTD_DISP | STATUS\n");
+	puts("NOME |ID |QTD_MAX |QTD_DISP | STATUS\n");
 	for(a=0; a<n;a++) {
+		if(!(equipamentos[a].quantidade_max)) continue;
 		printf("%s |", equipamentos[a].nome);
 		printf(" %d |", equipamentos[a].id);
 		printf(" %d |", equipamentos[a].quantidade_max);
 		printf(" %d |", equipamentos[a].quantidade_disponivel);
 		printf(" %s ", equipamentos[a].status);
-		printf("\n");
+		puts("");
 	}
 }
 void emprestarEquipamento(Equipamento *equipamentos, int n){
-	int id=0;
+int idn;
 	do {
-		printf("Digite o ID do equipamento que deseja pegar: (ou -1 para retornar ao menu)");
-		scanf("%d",&id);
+		puts("Digite o ID do equipamento que deseja pegar: (ou 0 para retornar ao menu)");
+		scanf("%d",&idn);
 		int i;
+		int q;
 		for(i=0;i<n;i++){
-			int q;
-			if (id == equipamentos[i].id){
-				printf("Digite a quantidade a ser emprestada:");
+			
+			
+			if (idn == equipamentos[i].id){
+				puts("Digite a quantidade a ser emprestada:");
 				scanf("%d", &q);
-				equipamentos[i].quantidade_disponivel -= q;
-				strcpy(equipamentos[i].status, status_possiveis[1]);
+				if(q>equipamentos[idn].quantidade_disponivel){
+
+					puts("Quantidade não disponível");
+					i--;
+					continue;
+
+				}
+				equipamentos[idn].quantidade_disponivel -= q;
+				strcpy(equipamentos[idn].status, status_possiveis[1]);
 				return;
 			}
 		}
-		printf("Digite um ID valido.");
-	} while (id!=-1);
-		
+	puts("Digite um ID valido.\n");
+	} while (idn);
 }
 
 void menu() {
@@ -111,3 +128,73 @@ void menu() {
     printf("Escolha uma opcao: ");
 }
 
+void devolverEquipamento(Equipamento *equipamentos,int n){
+int idn=0;
+	do {
+		puts("Digite o ID do equipamento que deseja devolver: (ou 0 para retornar ao menu)");
+		scanf("%d",&idn);
+		int q;
+		for(int i=0;i<n;i++){
+			if (idn == equipamentos[i].id){
+				
+				puts("Digite a quantidade a ser devolvida:");
+				scanf("%d", &q);
+				if(equipamentos[idn].quantidade_disponivel+q>equipamentos[idn].quantidade_max){ 
+
+					puts("Não é quantidade máxima do equipemento, digite uma quantidade válida");
+					i--;
+					continue;
+
+				}
+				equipamentos[idn].quantidade_disponivel += q;
+				strcpy(equipamentos[idn].status, status_possiveis[0]);
+				return;
+			}
+			
+		}
+		puts("Digite um ID valido.");
+	} while (idn);
+}
+
+void salvarDados(Equipamento *equipamentos,int n,const char *nome_arquivo){
+	FILE *file = fopen(nome_arquivo, "w");
+	if (file == NULL) {
+		puts("Erro ao abrir o arquivo para escrita.");
+		return;
+	}
+	
+	for (int i = 0; i < n; i++) {
+		fprintf(file, "%d %s %d %d %s\n", 
+				equipamentos[i].id, 
+				equipamentos[i].nome, 
+				equipamentos[i].quantidade_max, 
+				equipamentos[i].quantidade_disponivel, 
+				equipamentos[i].status);
+	}
+	
+	fclose(file);
+	puts("Dados salvos com sucesso.");
+
+}
+void carregarDados(Equipamento *equipamentos,int *n, const char *nome_arquivo) {
+    FILE *file = fopen(nome_arquivo, "r");
+    if (file == NULL) {
+        puts("Erro ao abrir o arquivo.");
+        return;
+    }
+
+    int i = 0;
+    while (fscanf(file, "%d %49s %d %d %19s",
+                  &equipamentos[i].id,
+                  equipamentos[i].nome,
+                  &equipamentos[i].quantidade_max,
+                  &equipamentos[i].quantidade_disponivel,
+                  equipamentos[i].status) == 5) {
+        i++;
+    }
+
+    fclose(file);
+
+	*n =i;
+}
+	
