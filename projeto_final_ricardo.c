@@ -16,6 +16,11 @@ typedef struct {
 // var globais
 int id=0;
 int c=0;
+/*
+da pra usar a matriz de status, mas como o enunciado pede pra usar string, vou usar string, pq eu acho mais intuitivo, porém gerenericamente falando, é melhor mexer com matrizes de char, ou seja, char status[3][20] = {"Disponível", "Emprestado", "Manutenção"};
+pois numa função a gente so precisa passar o índice do status, e não a string inteira, mas como o enunciado pede pra usar string, vou usar string, pq eu acho mais intuitivo.
+tu pode tentar aplicar se quiser
+*/
 
 //declaração de funções
 void cadastrarEquipamento(Equipamento*, int*);
