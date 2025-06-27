@@ -17,7 +17,7 @@ typedef struct {
 int id=0;
 int c=0;
 
-//funções
+//declaração de funções
 void cadastrarEquipamento(Equipamento*, int*);
 void listarEquipamentos(Equipamento*,int); 
 void emprestarEquipamento(Equipamento*,int n); 
@@ -57,6 +57,7 @@ int main() {
 }
 
 
+//funções 
 void menu() {
     printf("\n===== MENU =====\n");
     printf("1. Cadastrar Equipamento\n");
@@ -284,3 +285,4 @@ void carregarDados(Equipamento *equipamentos,int *n, const char *nome_arquivo) {
 
 }
 	
+
