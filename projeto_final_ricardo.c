@@ -15,6 +15,7 @@ typedef struct {
 
 // var globais
 int id=0;
+int c=0;
 
 //funções
 void cadastrarEquipamento(Equipamento*, int*);
@@ -40,10 +41,10 @@ int main() {
 
         switch(opcao) {
 			
-            case 1: cadastrarEquipamento(equipamentos, &n); break;
+            case 1: cadastrarEquipamento(equipamentos, &n); c++; break;
             case 2: listarEquipamentos(equipamentos, n); break;
-            case 3: emprestarEquipamento(equipamentos, n); break;
-            case 4: devolverEquipamento(equipamentos, n); break;
+            case 3: emprestarEquipamento(equipamentos, n); c++; break;
+            case 4: devolverEquipamento(equipamentos, n); c++; break;
             case 5: salvarDados(equipamentos, n, "equipamentos.txt"); break;
             case 0: printf("Saindo...\n"); break;
             default: printf("Opcao invalida.\n");
@@ -189,6 +190,16 @@ int idn=0;
 }
 
 void salvarDados(Equipamento *equipamentos,int n,const char *nome_arquivo){
+	
+	int salvar;
+	if(!c) puts("Nenhuma modificação foi feita, você realmente quer salvar?");
+	puts("Digite 1 para salvar ou 0 para cancelar: ");
+	scanf("%d", &salvar);
+
+	if (!salvar) {
+		puts("Salvamento cancelado.");
+		return;
+	}
 
 	FILE *file = fopen(nome_arquivo, "w");
 
@@ -217,10 +228,10 @@ void carregarDados(Equipamento *equipamentos,int *n, const char *nome_arquivo) {
 
     FILE *file = fopen(nome_arquivo, "r");
 
-    if (file == NULL) {
-        puts("Erro ao abrir o arquivo.");
-        return;
-    }
+	if (file == NULL) {
+		puts("Arquivo não encontrado, iniciando com dados vazios.");
+		return;
+	}
 
     int i = 0;
 
@@ -235,7 +246,7 @@ void carregarDados(Equipamento *equipamentos,int *n, const char *nome_arquivo) {
 
     fclose(file);
 
-	*n =i;
+	*n = i;
 
 }
 	
