@@ -56,6 +56,7 @@ int main() {
     return 0;
 }
 
+
 void menu() {
     printf("\n===== MENU =====\n");
     printf("1. Cadastrar Equipamento\n");
@@ -68,6 +69,14 @@ void menu() {
 }
 
 void cadastrarEquipamento(Equipamento *equipamentos, int *n){
+
+	if(*n >= MAX_EQUIP) {
+		puts("");
+		puts("================================");
+		puts("Limite de equipamentos atingido.");
+		puts("================================");
+		return;
+	}
 
     int p;
 	int s;
@@ -135,7 +144,10 @@ int idn;
 				scanf("%d", &q);
 				if(q>equipamentos[idn].quantidade_disponivel){
 
-					puts("Quantidade não disponível");
+					puts("");
+					puts("==========================");
+					puts("Quantidade não disponível.");
+					puts("==========================");
 					i--;
 					continue;
 
@@ -170,7 +182,10 @@ int idn=0;
 
 			if(equipamentos[idn].quantidade_disponivel+q>equipamentos[idn].quantidade_max){ 
 
-				puts("Não é quantidade máxima do equipemento, digite uma quantidade válida");
+				puts("");
+				puts("=====================================================");
+				puts("Quantidade excede a quantidade máxima do dispositivo.");
+				puts("=====================================================");
 				i--;
 				continue;
 
@@ -192,12 +207,23 @@ int idn=0;
 void salvarDados(Equipamento *equipamentos,int n,const char *nome_arquivo){
 	
 	int salvar;
-	if(!c) puts("Nenhuma modificação foi feita, você realmente quer salvar?");
-	puts("Digite 1 para salvar ou 0 para cancelar: ");
-	scanf("%d", &salvar);
+	if(!c){ 
+
+		puts("");
+		puts("==========================================================");
+		puts("Nenhuma modificação foi feita, você realmente quer salvar?");
+		puts("Se não, pressione 0 para cancelar, ou 1 para salvar.");
+		puts("==========================================================");
+		scanf("%d", &salvar);
+	
+	}
 
 	if (!salvar) {
+
+		puts("");
+		puts("======================");
 		puts("Salvamento cancelado.");
+		puts("======================");
 		return;
 	}
 
@@ -220,7 +246,10 @@ void salvarDados(Equipamento *equipamentos,int n,const char *nome_arquivo){
 	}
 	
 	fclose(file);
+	puts("");
+	puts("=========================");
 	puts("Dados salvos com sucesso.");
+	puts("=========================");
 
 }
 
@@ -229,7 +258,12 @@ void carregarDados(Equipamento *equipamentos,int *n, const char *nome_arquivo) {
     FILE *file = fopen(nome_arquivo, "r");
 
 	if (file == NULL) {
-		puts("Arquivo não encontrado, iniciando com dados vazios.");
+
+		
+		puts("");
+		puts("====================================================================");
+		puts("Arquivo não encontrado ou não pode ser aberto, criando novo arquivo.");
+		puts("====================================================================");
 		return;
 	}
 
